@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static  %}
+
+{% block title %} Sign Up {% endblock title %}
+
+{% block content %}
+<div class="page-wrapper bg-gra-01 p-t-180 p-b-100 font-poppins">
+    <div class="wrapper wrapper--w780">
+
+        {% if form.errors %}
+        {% for non_field_error in form.non_field.errors %}
+        <p class="text-danger">{{ non_field_error }}</p>
+        {% endfor %}
+        {% endif %}
+
+        <div class="card card-3">
+            <div class="card-heading"></div>
+            <div class="card-body">
+                <h2 class="title">Registration Info</h2>
+                <form method="POST" novalidate action="{% url 'register' %}"> {% csrf_token %}
+                    {% for field in form %}
+                    <div class="input-group">
+                        {% if form.errors %}
+                        {% for err in field.errors %}
+                        <p class="text-danger">{{err}}</p>
+                        {% endfor %}
+                        {% endif %}
+
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                    <div class="p-t-10">
+                        <button class="btn btn--pill btn--green" type="submit">Sign In</button>
+                    </div>
+
+                </form>
+                <div class="w-100 text-center mt-4 text">
+                    <p class="mb-0">Already have an account?</p>
+                    <a href="{% url 'login' %}">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

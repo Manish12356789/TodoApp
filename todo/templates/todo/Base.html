@@ -1,0 +1,41 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>TODO | {% block title %} {% endblock title %}</title>
+
+    {# Links for index page. #}
+    <link href="{% static 'todo/css/sidebar.css' %}" rel='stylesheet'>
+    <link href="{% static 'todo/css/all.css' %}" rel='stylesheet'>
+    <link href="{% static 'todo/css/style.css' %}" rel='stylesheet'>
+    <link href="{% static 'todo/css/user_profile.css' %}">
+
+    {# Links for login page. #}
+    <link rel="stylesheet" href="{% static 'todo/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'todo/css/bootstrap.min.css' %}">
+    <link href="{% static 'todo/css/main.css' %}" rel="stylesheet" media="all">
+
+    {# Links for register page. #}
+    <link href="{% static 'todo/vendor/select2/select2.min.css' %}" rel="stylesheet" media="all">
+    <link href="{% static 'todo/vendor/datepicker/daterangepicker.css' %}" rel="stylesheet" media="all">
+
+    <link href="{% static 'todo/css/user_edit.css' %}" rel="stylesheet">
+
+</head>
+<body>
+{% block content %}
+
+{% endblock content %}
+
+<script src="{% static 'todo/jquery.min.js' %}"></script>
+
+    {% block javascript %}
+
+    {% endblock javascript %}
+
+
+</body>
+</html>
