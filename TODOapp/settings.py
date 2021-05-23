@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+import pytz
+from django.utils import timezone
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,6 +31,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# set current time zone
+
+# freegeoip_response = requests.get('http://freegeoip.net/json')
+# freegeoip_response_json = freegeoip_response.json()
+# user_time_zone = freegeoip_response_json['time_zone']
+
+# timezone.activate(pytz.timezone(user_time_zone))
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
+    'bootstrap_modal_forms',
 ]
 
 MIDDLEWARE = [
@@ -106,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kathmandu'
 
 USE_I18N = True
 

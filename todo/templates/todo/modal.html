@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static  %}
+
+{% block title %} Admin | Deleted {{item.field}} {% endblock title %}
+
+{% block content %}
+
+<div class="card" style="margin-left: 450px; height: 30rem; margin-top: 100px; width: 40rem;"> 
+  <h1 class="card-header text-white text-center">Delete Task</h1>
+  <div class="card-body">
+    <h3 class="card-title text-white" >Are you sure you want to delete?</h3>
+    <p class="card-text text-white"><span class="font-weight-bold"></span> Task: </span>{{item.field}}</p>
+    <p class="text-danger h6"><span class="font-weight-bold"> Task Created:</span> <span id="cd">{{item.created_date}}</span></p>
+    <p class="text-danger h6"><span class="font-weight-bold"> Last Updated:</span> <span id="ud">{{item.updated_date}}</span></p>
+    <p class="text-danger h6 text-capitalize"><span class="font-weight-bold"> Status: </span>{{ item.status }}</p>
+    
+    <form method="post" class="text-center mt-5" action="">
+      {% csrf_token %}
+        <button class="btn btn-danger" type="submit" >Confirm</button>
+        <a href="/todo"><div class="btn btn-primary">Cancel</div></a>
+    </form>  </div>
+</div>
+
+{% endblock content %}

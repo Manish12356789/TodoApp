@@ -5,25 +5,74 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login as auth_login, logout as dj_logout, update_session_auth_hash
 from django.contrib import messages
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from django.contrib.auth.models import User
 from .models import Item, UserProfile
-from .forms import TODOform, UserForm, UserEditForm, UserProfileForm, PasswordForm
+from .forms import TODOform, StatusForm, UserForm, UserEditForm, UserProfileForm, PasswordForm, UserSelectForm
+from .filter import ItemFilterAdmin, ItemFilterUser
+
+from django.urls import reverse_lazy
+
+
 
 
 def index(request):
     my_user = request.user  # check which account is logged in and fetch all information about them
     form = TODOform()
+    usf = UserSelectForm()
+    filterForm = ItemFilterAdmin()
+
     if request.user.is_superuser:
-        all_items = Item.objects.order_by('id')
         all_users = User.objects.filter(is_superuser=False)
-        context = {'users': all_users, 'my_user': my_user, 'form': form, 'items': all_items}
-        return render(request, 'todo/admin_todo.html', {'context': context})
+        if request.method == "POST":
+            
+            items = Item.objects.all()
+            filterForm = ItemFilterAdmin(request.POST, queryset=items)
+            item = filterForm.qs
+
+            context = {'form': form, 'usf':usf, 'my_user': my_user, 'all_users': all_users, 'dateFilterForm': filterForm, 'filter_items': item}
+            return render(request, 'todo/admin_todo.html', context)
+        else:
+            all_items = Item.objects.order_by('-created_date')
+            page = request.GET.get('page', 1)
+            paginator = Paginator(all_users, 2)
+            try:
+                users = paginator.page(page)
+            except PageNotAnInteger:
+                users = paginator.page(1)
+
+            except EmptyPage:
+                users = paginator.page(paginator.num_pages)
+
+            context = {'users': users, 'all_users': all_users, 'my_user': my_user, 'form': form, 'usf':usf, 'dateFilterForm': filterForm, 'items': all_items}
+            return render(request, 'todo/admin_todo.html', context)
     else:
-        all_items = Item.objects.filter(user=my_user)
-        content = {'items': all_items, 'form': form, 'my_user': my_user}
-        return render(request, 'todo/index.html', {'context': content})
+        if request.method == "POST":
 
+            items = Item.objects.filter(user=my_user)
+            filterForm = ItemFilterUser(request.POST, queryset=items)
+            item = filterForm.qs
 
+            context = {'form': form, 'my_user': my_user, 'dateFilterForm': ItemFilterUser, 'filter_items': item}
+            return render(request, 'todo/user_todo.html', context)
+        else:
+            all_items = Item.objects.filter(user=my_user).order_by('-created_date')
+            page = request.GET.get('page', 1)
+            paginator = Paginator(all_items, 5)
+            try:
+                items = paginator.page(page)
+            except PageNotAnInteger:
+                items = paginator.page(1)
+
+            except EmptyPage:
+                items = paginator.page(paginator.num_pages)
+
+            # form1 = TODOform()
+            context = {'items': items, 'my_user': my_user, 'dateFilterForm': ItemFilterUser, 'form': form}
+            return render(request, 'todo/user_todo.html', context)
+        
+        
 def login(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -68,7 +117,7 @@ def edit_user(request):
     user = request.user  # get user instance
     user_id = request.user.id  # get logged in user id
     userForm = UserEditForm(instance=user)
-    print(user.userprofile)
+    # print(user.userprofile)
     if user.userprofile.profile_pic:
         profileForm = UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
     else:
@@ -89,9 +138,10 @@ def edit_user(request):
 
         if editForm.is_valid():  # check user edit form is valid or not
             editForm.save()
+            return redirect('todo_home')
         else:
             print(editForm.errors)
-        return redirect('todo_home')
+        
 
     context = {'user_form': userForm, 'profile_form': profileForm}
     return render(request, 'todo/user_edit.html', context)  # user profile update successful
@@ -110,6 +160,7 @@ def addTODO(request):
             new_item.save()
         else:
             print(form.errors)
+            messages.error(request, "** You must enter your task. **")
     return redirect('todo_home')
 
 
@@ -122,37 +173,40 @@ def addTODO(request):
 def add_admin_todo(request):
     if request.method == "POST":
         form = TODOform(request.POST)
-        if form.is_valid():
+        usf = UserSelectForm(request.POST)
+        if form.is_valid() and usf.is_valid:            
+            user_id = request.POST['users']
             item = request.POST['field']
-            print(item)
-            user_id = request.POST['user_todo']
-            print(user_id)
-            # item = request.POST['field']
             new_item = Item(user_id=user_id, field=item)
             new_item.save()
-            return redirect('todo_home')
-            # print(item)
 
         else:
             print(form.errors)
+            print(usf.errors)
+        return redirect('todo_home')
     return render(request, "todo/admin_todo.html")
 
 
 def deleteTodo(request, id):
     item = Item.objects.get(id=id)
-    item.delete()
-    return redirect('todo_home')
+    if request.method == "POST":
+        item.delete()
+        return redirect('todo_home')
+    return render(request, 'modal.html', {'item':item})
 
 
 def editTodo(request, id):
     item = Item.objects.get(id=id)
+    SForm = StatusForm(instance=item)
     updateForm = TODOform(instance=item)
     if request.method == 'POST':
         updateForm = TODOform(request.POST, instance=item)
-        if updateForm.is_valid():
+        SForm = StatusForm(request.POST, instance=item)
+        if updateForm.is_valid() and SForm.is_valid():
             updateForm.save()
+            SForm.save()
             return redirect('todo_home')
-    return render(request, "todo/update.html", {'updateForm': updateForm})
+    return render(request, "todo/update.html", {'updateForm': updateForm, 'statusform': SForm })
 
 
 def change_password(request):
@@ -169,5 +223,6 @@ def change_password(request):
     else:
         form = PasswordForm(request.user)
     return render(request, 'todo/change_password.html', {
-        'form': form
+        'password_change_form': form
     })
+

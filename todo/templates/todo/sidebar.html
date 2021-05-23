@@ -1,0 +1,49 @@
+{% load static  %}
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <style>
+            .bg_img{
+                background-image: url( "{% static 'todo/images/background/bg_1.jpg' %}");
+            }
+            .profile_image_default{
+                background-image: url( "{% static 'todo/images/default.jpg' %}");
+            }
+        </style>
+  </head>
+		
+		<div class="wrapper d-flex align-items-stretch">
+			<nav id="sidebar">
+	  		<div class="img bg_img bg-wrap text-center py-4" >
+	  	    <div class="user-logo">
+                {% if user.userprofile.profile_pic %}
+                <div class="img" style="background-image: url( '{{request.user.userprofile.profile_pic.url}}');"></div>
+	  				<h3>{{ my_user.username }}</h3>
+               {% else %}
+               <div class="img profile_image_default "></div>
+	  				<h3>{{ my_user.username }}</h3>
+                {% endif %}
+
+            </div>
+	  		</div>
+        <ul class="list-unstyled components mb-5">
+          <li class="active">
+            <a href="{% url 'todo_home' %}"><span class="fa fa-home mr-3"></span> Home</a>
+          </li>
+          <li>
+            <a href="{% url 'edit_user' %}"><span class="fa fa-cog mr-3"></span> Update Profile</a>
+          </li>
+          <li>
+            <a href="{% url 'change_password' %}"><span class="fa fa-support mr-3"></span> Change Password</a>
+          </li>
+          <li>
+            <a href="{% url 'logout' %}"><span class="fa fa-sign-out mr-3"></span> Sign Out</a>
+          </li>
+        </ul>
+    </nav>
+
+

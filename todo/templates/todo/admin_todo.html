@@ -4,104 +4,210 @@
 {% block title %} Admin | {{request.user}} {% endblock title %}
 
 {% block content %}
+
 <!-- Side navigation -->
-<div class="sidenav">
-    {% if user.userprofile.profile_pic %}
-    <img class="profile_image" src="{{user.userprofile.profile_pic.url}}" alt="Maxwell Admin">
-    {% else %}
-    <img class="profile_image" src="{% static 'todo/images/default.jpg' %}" alt="Maxwell Admin">
 
-    {% endif %}
-    <p class="float-left ml-5 mt-2 text-white font-weight-bold">{{ context.my_user.username }}</p>
-    <hr class="mt-5 border border-info">
-<!--    <form method="POST" id="select"> {% csrf_token %}-->
-<!--        <select id="user_todo"-->
-<!--                class="form-select btn-block form-select-lg mb-3 bg-secondary" aria-label="User select">-->
-<!--            <option selected disabled>Choose one user</option>-->
-<!--            {% for user in context.users %}-->
-<!--            <option class="btn&#45;&#45;pill" value="{{user.id}}"><a href="#"> {{user.username}} {{user.id}}</a></option>-->
-<!--            {% endfor %}-->
-<!--        </select>-->
-<!--    </form>-->
+{% include "sidebar.html" %}
 
-     <a class="text-decoration-none" href="{% url 'change_password' %}">Change Password</a>
-    <a href="{% url 'edit_user' %}" class="text-decoration-none"> Update Profile </a>
+<div id="content" class="p-4 p-md-5 pt-5">
 
-    <div class="button_end">
-        <a class="btn btn-secondary btn-block font-weight-bold text-info " href="{% url 'logout' %}"
-           role="button">Logout</a>
-    </div>
-</div>
+ <!-- Top navbar -->
+ <nav class="navbar navbar-expand-lg navbar-light" style="margin-bottom: 5px !important;">
+    <form class="form-inline"  method="POST" action="{% url 'todo_home'%}" novalidate>
+        {% csrf_token %}
+       <div class="input-group">
+          <div class="input-group-prepend text-dark ">
+              {{dateFilterForm.form}}
+          <button type="submit" id="filter" class="btn btn-primary ml-5 rounded">Filter</button>
+          <a href="{% url 'todo_home' %}" class=" btn btn-secondary ml-2 rounded" name="reset_form">clear</a>
+          </div>  
+        </div>
+    </form>
+</nav>
 
-<br>
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="main-todo-input-wrap">
-            <form method="post" id="todo_form" action="{% url 'add_admin_todo' %}"> {% csrf_token %}
+
+        <div class="text-center">
+            {% if users.has_other_pages %}
+            <ul class="pagination">
+                {% if users.has_previous %}
+                <li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in users.paginator.page_range %}
+                {% if users.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if users.has_next %}
+                <li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if form.errors %}
+{% for non_field_error in form.non_field.errors %}
+    <p class="text-danger">{{ non_field_error }}</p>
+{% endfor %}
+{% endif %}
+
+{% if usf.errors %}
+{% for non_field_error in usf.non_field.errors %}
+    <p class="text-danger">{{ non_field_error }}</p>
+{% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-lg-12">
+            <form method="post" id="todo_form" novalidate action="{% url 'add_admin_todo' %}"> {% csrf_token %}
+
                 <div class="main-todo-input fl-wrap">
                     <div class="main-todo-input-item">
-                        {{context.form.field}}
-                        <!--                        {{context.form.user}}-->
+                        <span id="task" >{{form.field}}</span>
                     </div>
 
                     <button class="add-items main-search-button" id="add">ADD</button>
                 </div>
-
-                <select name="user_todo" class="user-select btn-block" aria-label="User select"
-                        class="">
-                    <option selected disabled value="choose">Choose one user</option>
-                    {% for user in context.users %}
-                    <option class="btn--pill" value="{{user.id}}"> {{user.username}}</option>
-                    {% endfor %}
-                </select>
+                {% if usf.errors %}
+                    <p class="text-danger" >{{usf.users.errors}}</p>
+                {% endif %}
+                {{usf.users.label}}
+                <div class="main-todo-input fl-wrap">
+                    {{usf.users}}
+            </div>
 
             </form>
-        </div>
+        <!-- </div> -->
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-        <div class="main-todo-input-wrap">
+        <!-- <div class="main-todo-input-wrap"> -->
             <div class="main-todo-input fl-wrap todo-listing">
-                <ul class="list-items ml-3">
-                    {% for user in context.users%}
-                    <li class="font-weight-bold text-dark">{{user.username}}</li>
-                    {% for item in context.items %}
-                    {% if user.id == item.user_id %}
-                    <ul id="list-items">
-                        <li class="ml-2">
-                            {% if item.field %}
-                            {{item.field}}
-                            {% elif not item.field %}
-                            <p>Nothing todo... </p>
-                            {% endif %}
+                <ul id="append_list" class="ml-5 list-items list-unstyled ml-3">
+                    {% if filter_items %}
+                    <!-- <li class="text-dark font-weight-bold"> {{ user_name.username }} </li> -->
+                    <meta id="users" data-all_users="{{ all_users }}">
+                    {% for user in all_users %}
+                    <li id="user_{{forloop.counter}}" class="font-weight-bold text-dark">  </li>
+                    {% for item in filter_items %}
+                    {% if item.user_id == user.id %}
+                    <ul id="ml-5 list-items">
+                        {% if item.field %}
+                        <li>
+                            <script> document.getElementById('user_{{forloop.parentloop.counter}}').textContent = "{{user}}";</script>
+                            <p id="item">{{item.field}}</p>
                             <a href="{% url 'delete' item.id %}" class="btn btn-danger float-right ml-2">Delete</a>
-                            <a href="{% url 'edit' item.id %}" class="btn btn-secondary float-right">Edit</a><br><br>
+                            <a href="{% url 'edit' item.id %}" class="btn btn-secondary float-right">Edit</a>
+                            <p class="text-danger h6 text-capitalize"><span class="font-weight-bold"> Status: </span>
+                            {{ item.status }}
+                            </p>
                         </li>
+                        {% else %}
+                        <li> Nothing has todo </li>
+                        {% endif %}
                     </ul>
                     {% endif %}
                     {% endfor %}
                     {% endfor %}
+                    {% else %}
+                    {% for user in users%}
+                    <li class="font-weight-bold text-dark">{{user.username}}</li>
+                    {% for item in items %}
+                    {% if user.id == item.user_id %}
+                    <ul class="list-items">
+                        {% if item.field %}
+                        <li class="ml-4">
+                            {{item.field}} 
+                            <a href="{% url 'delete' item.id %}" class="btn btn-danger ml-3 float-right" >Delete</a>
+                            <a href="{% url 'edit' item.id %}" class="btn btn-secondary float-right">Edit</a>
+                            <p class="text-danger h6 text-capitalize"><span class="font-weight-bold"> Status: </span>
+                            {{ item.status }}
+                            </p>
+                        </li>
+                        {% else %}
+                        <li> Nothing has todo </li>
+                        {% endif %}
+
+                    </ul>
+                    {% endif %}
+                    {% endfor %}
+                    {% endfor %}
+                    {% endif %}
                 </ul>
             </div>
+        <!-- </div>           -->
+
+        <div class="main-todo-input-wrap text-center">
+            {% if users.has_other_pages %}
+            <ul class="pagination">
+                {% if users.has_previous %}
+                <li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in users.paginator.page_range %}
+                {% if users.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if users.has_next %}
+                <li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+            </ul>
+            {% endif %}
         </div>
     </div>
 </div>
+</div>
 
 {% endblock content %}
-
+        
+        
+   
 {% block javascript %}
 <script>
-    var button = document.getElementById('add');
-    if (button.clicked == true) {
-        alert("clicked");
-        var select = document.getElementById('user_todo');
-        if (!select.value) {
-            document.getElementById('user_todo').focus();
-            alert("Please! select user.")
+    function addError() {
+        var isValid = true;
+        var user = document.getElementById("user_todo").value;
+        var task = document.getElementById("task").innerHTML;
+        console.log(user)
+        console.log(task);
+        if(task === "choose"){
+            document.getElementById("select_error").innerHTML= "must choose user";
+            isValid = false;
         }
-    }
-</script>
+        if(task === null){
+            document.getElementById("add_error").innerHTML="task enter";
+            isValid = false;
+        }
+        return isValid;
+}
+    // $(document).ready(function(){
+    //     $("#add").click(function(){
+    //         var task = $("#user_todo").val;
+    //         if (task === null){
+    //             $("#user_error").val("must have to choose user.");
+    //             return false;
+    //         }
+    //     });
+    // });
+</script>    
+
 {% endblock javascript %}
+

@@ -12,6 +12,7 @@
     <link href="{% static 'todo/css/all.css' %}" rel='stylesheet'>
     <link href="{% static 'todo/css/style.css' %}" rel='stylesheet'>
     <link href="{% static 'todo/css/user_profile.css' %}">
+    <!-- <link href="{% static 'todo/css/modal.css' %}"> -->
 
     {# Links for login page. #}
     <link rel="stylesheet" href="{% static 'todo/css/login.css' %}">
@@ -24,6 +25,10 @@
 
     <link href="{% static 'todo/css/user_edit.css' %}" rel="stylesheet">
 
+    {% block style %}
+    
+    {% endblock style %}
+
 </head>
 <body>
 {% block content %}
@@ -31,6 +36,8 @@
 {% endblock content %}
 
 <script src="{% static 'todo/jquery.min.js' %}"></script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+
 
     {% block javascript %}
 

@@ -1,8 +1,8 @@
 body {
     margin: 0;
-    padding-top: 40px;
-    color: #fff3cd;
-    background-color: #8f51f3 !important;
+    padding-top: 1px;
+    /* color: #fff3cd; */
+    background-color: #efefef !important;
     position: relative;
     height: 100%;
 }
@@ -53,7 +53,7 @@ body {
 }
 
 .card {
-    background: #43304f !important;
+    background: #32373d !important;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
@@ -61,8 +61,9 @@ body {
     margin-bottom: 1rem;
 }
 .user-select{
-    background-color: #eaccfd;
-    color: #33053c;
-    border-radius: 1px;
+    background-color: #efefef;
+    color: #242425;
+    border-radius: 4px;
+    border-color: #e2dbdb;
     box-shadow: 0px 0px 0px 6px rgba(255, 255, 255, 0.3)
 }

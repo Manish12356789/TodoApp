@@ -7,6 +7,9 @@ from django.dispatch import receiver
 class Item(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     field = models.CharField(max_length=60)
+    status = models.CharField(max_length=50, default="remaining")
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name_plural = "Items"
