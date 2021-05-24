@@ -5,9 +5,13 @@
 
 {% block content %}
 
-{% include "sidebar.html" %}
+<div class="row">
+<div class="col-lg-2">
+    {% include "sidebar.html" %}
+</div>
+<div class="col-lg-10">
 
-<div id="content" style="padding-left: 12rem !important;" class="p-4 p-md-5 pt-5">
+<div id="content" class="p-5">
     <nav class="navbar navbar-expand-lg navbar-light">
         <form class="form-inline" style="margin-left: 20px;" method="POST" action="{% url 'todo_home'%}" novalidate>
             {% csrf_token %}
@@ -106,6 +110,8 @@
         {% endif %}
     </ul>
     {% endif %}
+</div>
+</div>
 </div>
 </div>
 

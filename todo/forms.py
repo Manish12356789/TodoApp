@@ -36,7 +36,7 @@ class StatusForm(forms.ModelForm):
 
 class UserSelectForm(forms.Form):
     users = forms.ModelChoiceField(queryset=User.objects.filter(is_superuser=False), label="Choose One User:", widget=forms.Select(
-        attrs={'class':'user-select btn-block'}))
+        attrs={'class':'user-select btn-block'}), empty_label="Choose One User...")
     class Meta:
         fields = ['users']
     

@@ -179,12 +179,15 @@ def add_admin_todo(request):
             item = request.POST['field']
             new_item = Item(user_id=user_id, field=item)
             new_item.save()
-
         else:
             print(form.errors)
             print(usf.errors)
+            messages.error(request, "Must have to choose user.")
         return redirect('todo_home')
-    return render(request, "todo/admin_todo.html")
+    # form = TODOform()
+    # usf = UserSelectForm()
+    # context = {'form': form, 'usf':usf}
+    # return render(request, "todo/admin_todo.html")
 
 
 def deleteTodo(request, id):
