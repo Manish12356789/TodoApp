@@ -1,6 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+
 
 from django.contrib.auth import authenticate, login as auth_login, logout as dj_logout, update_session_auth_hash
 from django.contrib import messages
@@ -16,7 +18,7 @@ from django.urls import reverse_lazy
 
 
 
-
+@login_required
 def index(request):
     my_user = request.user  # check which account is logged in and fetch all information about them
     form = TODOform()
@@ -108,11 +110,13 @@ def register(request):
     return render(request, 'todo/register.html', {'form': form})
 
 
+@login_required
 def logout(request):
     dj_logout(request)
     return redirect('login')
 
 
+@login_required
 def edit_user(request):
     user = request.user  # get user instance
     user_id = request.user.id  # get logged in user id
@@ -147,13 +151,12 @@ def edit_user(request):
     return render(request, 'todo/user_edit.html', context)  # user profile update successful
 
 
+@login_required
 @require_POST
 def addTODO(request):
     user_id = request.user.id
     if request.method == "POST":
         form = TODOform(request.POST)
-        # user_id = request.user.id
-        # print(user_id)
         if form.is_valid():
             item = request.POST['field']
             new_item = Item(user_id=user_id, field=item)
@@ -164,12 +167,7 @@ def addTODO(request):
     return redirect('todo_home')
 
 
-# def add_profile_pic(request):
-#     editProfileForm = UserProfileForm()
-#     context = {'profile_form': editProfileForm}
-#     return render(request, 'todo/user_edit.html', context)
-
-
+@login_required
 def add_admin_todo(request):
     if request.method == "POST":
         form = TODOform(request.POST)
@@ -182,7 +180,7 @@ def add_admin_todo(request):
         else:
             print(form.errors)
             print(usf.errors)
-            messages.error(request, "Must have to choose user.")
+            # messages.error(request, "Must have to choose user.")
         return redirect('todo_home')
     # form = TODOform()
     # usf = UserSelectForm()
@@ -190,6 +188,7 @@ def add_admin_todo(request):
     # return render(request, "todo/admin_todo.html")
 
 
+@login_required
 def deleteTodo(request, id):
     item = Item.objects.get(id=id)
     if request.method == "POST":
@@ -198,6 +197,7 @@ def deleteTodo(request, id):
     return render(request, 'modal.html', {'item':item})
 
 
+@login_required
 def editTodo(request, id):
     item = Item.objects.get(id=id)
     SForm = StatusForm(instance=item)
@@ -212,6 +212,7 @@ def editTodo(request, id):
     return render(request, "todo/update.html", {'updateForm': updateForm, 'statusform': SForm })
 
 
+@login_required
 def change_password(request):
     if request.method == 'POST':
         form = PasswordForm(request.user, request.POST)

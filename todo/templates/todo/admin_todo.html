@@ -54,39 +54,20 @@
 </div>
     
 
-{% if form.errors %}
-{% for non_field_error in form.non_field.errors %}
-    <p class="text-danger">{{ non_field_error }}</p>
-{% endfor %}
-{% endif %}
-
-{% if usf.errors %}
-{% for non_field_error in usf.non_field.errors %}
-    <p class="text-danger">{{ non_field_error }}</p>
-{% endfor %}
-{% endif %}
+<p class="text-danger" id="field_error"> </p>
 
 <form method="post" id="todo_form" novalidate action="{% url 'add_admin_todo' %}"> {% csrf_token %}
 
     <div class="main-todo-input fl-wrap">
         <div class="main-todo-input-item">
-            {% for field in form %}
-                {{field}}
-                {% if form.errors %}
-                    {{field.errors}}
-                {% endif %}
-            {% endfor %}
+                {{form.field}}
         </div>
 
-        <button class="add-items main-search-button" id="add">ADD</button>
+        <button class="add-items main-search-button" onclick="addError()" id="add">ADD</button>
     </div>
 
-    {% for msg in messages %}
-        <p class="text-danger" >{{msg}}</p>
-    {% endfor %}
-    {% if usf.errors %}
-        <p class="text-danger" >{{usf.errors}}</p>
-    {% endif %}
+    <p class="text-danger" id="users_error"></p>
+    
     <div class="main-todo-input fl-wrap">
         {{usf.users}}
 </div>
@@ -181,31 +162,24 @@
    
 {% block javascript %}
 <script>
-    function addError() {
-        var isValid = true;
-        var user = document.getElementById("user_todo").value;
-        var task = document.getElementById("task").innerHTML;
-        console.log(user)
-        console.log(task);
-        if(task === "choose"){
-            document.getElementById("select_error").innerHTML= "must choose user";
-            isValid = false;
-        }
-        if(task === null){
-            document.getElementById("add_error").innerHTML="task enter";
-            isValid = false;
-        }
-        return isValid;
+function addError(){
+    var valid = true;
+    var user = document.getElementById("id_users").value;
+    console.log(user);
+    if (user === ''){
+        document.getElementById("users_error").innerHTML="You must choose one user.";
+        valid = false;
+    }
+
+
+    var field = document.getElementById("todo-list-item").value;
+    console.log(field);
+    if (field === ''){
+        document.getElementById("field_error").innerHTML="You must enter your task.";
+        valid = false;
+    }
+ return valid;   
 }
-    // $(document).ready(function(){
-    //     $("#add").click(function(){
-    //         var task = $("#user_todo").val;
-    //         if (task === null){
-    //             $("#user_error").val("must have to choose user.");
-    //             return false;
-    //         }
-    //     });
-    // });
 </script>    
 
 {% endblock javascript %}
