@@ -1,7 +1,7 @@
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
-# from django.views.generic import TemplateView
+from allauth.account import views as allauth_view
 from django.views.generic.base import RedirectView
 
 from . import views
@@ -32,6 +32,11 @@ urlpatterns = [
           name='password_reset_confirm'),
      path('reset/done/',
           auth_views.PasswordResetCompleteView.as_view(),
-          name='password_reset_complete')
+          name='password_reset_complete'),
+
+     # social authincation
+     path("login_custom/", allauth_view.signup, name="account_login"),
+     # path('social_auth/', include('allauth.urls'))
+
 
 ]

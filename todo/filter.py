@@ -1,3 +1,4 @@
+from django.forms.widgets import Widget
 import django_filters
 from django_filters import DateFromToRangeFilter, ModelChoiceFilter, widgets
 from .models import *
@@ -16,13 +17,18 @@ class ItemFilterAdmin(django_filters.FilterSet):
     #         'class': 'form-control user-select btn-block',
     #     }) )
     user = ModelChoiceFilter(queryset = User.objects.filter(is_superuser=False))
-    # widget = forms.Select(attrs={
-    #     'class': 'form-control user-select btn-block',
-    # })
-    # )
+    widget = forms.Select(attrs={
+        'class': 'form-control user-select btn-block',
+    })
+
     class Meta:
         model = Item
         fields = ['fromDate', 'user']
+
+    # def __init__(self, *args, **kwargs):
+    #     super(ItemFilterAdmin, self).__init__(*args, **kwargs)
+    #     self.filters['user__icontains'].widget = attr('form-control user-select btn-block')
+
 
 
 

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static  %}
+{% load socialaccount %}
+{% providers_media_js %}
 
 {% block title %} Sign Up {% endblock title %}
 
@@ -13,10 +15,12 @@
         {% endfor %}
         {% endif %}
 
-        <div class="card card-3">
+        <div class="text-white card card-3">
             <div class="card-heading"></div>
             <div class="card-body">
-                <h2 class="title">Registration Info</h2>
+                <h2 class="title text-center">Registration Info</h2>
+                <a href="{% provider_login_url 'facebook' %}" class="mb-5 btn btn-primary btn-block">Login With Facebook</a>
+                <a href="{% provider_login_url 'google' %}" class="mb-5 btn btn-secondary btn-block">Login With Google</a>
                 <form method="POST" novalidate action="{% url 'register' %}"> {% csrf_token %}
                     {% for field in form %}
                     <div class="input-group">

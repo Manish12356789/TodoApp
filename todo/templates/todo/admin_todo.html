@@ -12,20 +12,59 @@
 </div>
 <div class="col-lg-10">
 
-<div id="content" class="p-5">
+<div id="content" class="">
+
+
+
+	<!-- <nav class="ml-2 p-3 navbar navbar-expand-lg navbar-light bg-secondary">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto topnav">
+            <form class="form-inline"  method="POST" action="{% url 'todo_home'%}" novalidate> {% csrf_token %}
+                <li class="nav-item">
+                    {{dateFilterForm.form.fromDate.label}}
+                    {{dateFilterForm.form.fromDate}}
+                </li>
+                <li class="nav-item">
+                    {{dateFilterForm.form.user.label}}:
+                    <div class="ml-3 form-control user-select btn-block">
+                    {{dateFilterForm.form.user}}
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class=" btn btn-primary text-white p-3 ml-5" type="submit" id="filter">Filter</a>                  
+                </li>
+                <li class="nav-item">
+                    <a class=" btn btn-danger text-white  p-3 ml-2" type="button" href="{% url 'todo_home' %}">Clear</a>
+                </li>
+            </form>
+        </ul>
+        </div>
+    </nav> -->
+
 
  <!-- Top navbar -->
- <nav class="navbar navbar-expand-lg navbar-light" style="margin-bottom: 5px !important;">
+ <nav class="ml-2 p-4 navbar navbar-expand-lg navbar-light bg-secondary">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <form class="form-inline"  method="POST" action="{% url 'todo_home'%}" novalidate>
         {% csrf_token %}
-       <div class="input-group">
-          <div class="input-group-prepend text-dark ">
-              {{dateFilterForm.form}}
-          <button type="submit" id="filter" class="btn btn-primary ml-5 rounded">Filter</button>
-          <a href="{% url 'todo_home' %}" class=" btn btn-secondary ml-2 rounded" name="reset_form">clear</a>
-          </div>  
-        </div>
+        <ul class="navbar-nav ml-auto topnav">
+            <li class="nav-item">
+                {{dateFilterForm.form.fromDate.label}}
+                {{dateFilterForm.form.fromDate}}            
+            </li>
+            <li class="nav-item">
+                {{dateFilterForm.form.user.label}}:
+                <div class="ml-3 form-control user-select btn-block">
+                    {{dateFilterForm.form.user}}
+                </div>
+            </li>
+            <li class="nav-item">
+                <button type="submit" id="filter" class="btn btn-primary ml-5 rounded">Filter</button>
+                <a href="{% url 'todo_home' %}" class="p-3 btn btn-danger ml-2 rounded" name="reset_form">clear</a>
+            </li>  
+        </ul>  
     </form>
+    </div>
 </nav>
 
 
@@ -53,7 +92,7 @@
     {% endif %}
 </div>
     
-
+<div class="p-5">
 <p class="text-danger" id="field_error"> </p>
 
 <form method="post" id="todo_form" novalidate action="{% url 'add_admin_todo' %}"> {% csrf_token %}
@@ -127,6 +166,8 @@
         {% endfor %}
         {% endif %}
     </ul>
+</div>
+
 </div>
 
 <div class="main-todo-input-wrap text-center">

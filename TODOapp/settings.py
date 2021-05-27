@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
-import pytz
 from django.utils import timezone
 
 
@@ -46,12 +45,20 @@ INSTALLED_APPS = [
     'todo',
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters',
-    'bootstrap_modal_forms',
+
+    'django_filters',  # <-- For filter items with form and model
+    # apps for django allauth for social media login 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+
 ]
 
 MIDDLEWARE = [
@@ -62,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'TODOapp.urls'
@@ -84,6 +92,14 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in django admin, regardless of 'allauth' 
+    'django.contrib.auth.backends.ModelBackend',
+
+    # django-allauth aunthecation backend
+    'allauth.account.auth_backends.AuthenticationBackend'
+)
 
 WSGI_APPLICATION = 'TODOapp.wsgi.application'
 
@@ -132,6 +148,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'todo_home'
+LOGOUT_REDIRECT_URL= 'login'
 
 STATIC_URL = 'todo/static/'
 MEDIA_URL = '/images/'
@@ -139,6 +158,18 @@ MEDIA_URL = '/images/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'todo/static'),
 )
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'todo/static/todo/images/')
 
@@ -148,3 +179,12 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_PASS')
+
+SITE_ID = 3
+SITE_ID = 1
+
+
+# SOCIAL_AUTH_FACEBOOK_KEY = '206764147945841'
+# SOCIAL_AUTH_FACEBOOK_SECRET = 'eeb74d0482a8c224153d30a785168954'
+# SOCIAL_AUTH_FACEBOOK_KEY = config('APP_ID_FACEBOOK')  # App ID
+# SOCIAL_AUTH_FACEBOOK_SECRET = config('SECRET_KEY_FACEBOOK')  # App Secret
