@@ -28,26 +28,9 @@
                         <div class="user-logo">
                             <div class="img" name="cp" style="background-image: url( '{{image_url}}' );"></div>
                             <h3>{{ my_user.username }}</h3>
+                            <h4>{{ my_user.email }}</h4>
                       </div>
                     </div>
-                    <div> <h5 class="">{{ request.user.username }}</h5>
-                    <h6 class="">{{ request.user.email }}</h6> </div>
-                    <!-- <div class="account-settings">
-                        <div class="user-profile">
-                            <div class="user-avatar">
-                                {% if user.userprofile.profile_pic %}
-                                <img class="profile_image" src="{{user.userprofile.profile_pic.url}}"
-                                     alt="{{request.user}}">
-                                {% else %}
-                                <img class="profile_image" src="{% static 'todo/images/default.jpg' %}"
-                                     alt="{{request.user}}">
-
-                                {% endif %}
-                            </div>
-                            <h5 class="user-name">{{ request.user.username }}</h5>
-                            <h6 class="user-email">{{ request.user.email }}</h6>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
