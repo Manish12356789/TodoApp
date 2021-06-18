@@ -14,17 +14,39 @@ from .models import Item, UserProfile
 from .forms import TODOform, StatusForm, UserForm, UserEditForm, UserProfileForm, PasswordForm, UserSelectForm
 from .filter import ItemFilterAdmin, ItemFilterUser
 
-from django.urls import reverse_lazy
+from django.dispatch import receiver
+from allauth.account.signals import user_signed_up
+from allauth.socialaccount.models import SocialAccount
 
 
+image_url = ""
 
+# @receiver(user_signed_up)
 @login_required
-def index(request):
+def index(request, **kwargs):
     my_user = request.user  # check which account is logged in and fetch all information about them
     form = TODOform()
     usf = UserSelectForm()
     filterForm = ItemFilterAdmin()
+    global image_url
 
+    # fb_uid = SocialAccount.objects.filter(user_id=request.user, provider='facebook')
+
+
+    try:
+        try:
+            socialaccount_obj = SocialAccount.objects.filter(provider='facebook', user_id=my_user)
+            image_url = socialaccount_obj[0].extra_data['picture']['data']['url']
+        except:
+            socialaccount_obj = SocialAccount.objects.filter(provider='google', user_id=my_user)
+            image_url = socialaccount_obj[0].extra_data['picture']    
+    except:
+        if my_user.userprofile.profile_pic:
+            image_url = my_user.userprofile.profile_pic.url
+        else:
+            image_url = "/todo/static/todo/images/default.jpg"            
+ 
+                
     if request.user.is_superuser:
         all_users = User.objects.filter(is_superuser=False)
         if request.method == "POST":
@@ -71,7 +93,7 @@ def index(request):
                 items = paginator.page(paginator.num_pages)
 
             # form1 = TODOform()
-            context = {'items': items, 'my_user': my_user, 'dateFilterForm': ItemFilterUser, 'form': form}
+            context = {'items': items, 'my_user': my_user, 'dateFilterForm': ItemFilterUser, 'form': form, 'image_url': image_url}
             return render(request, 'todo/user_todo.html', context)
         
         
@@ -109,7 +131,6 @@ def register(request):
             # messages.error(request, errs)
     return render(request, 'todo/register.html', {'form': form})
 
-
 @login_required
 def logout(request):
     dj_logout(request)
@@ -118,6 +139,7 @@ def logout(request):
 
 @login_required
 def edit_user(request):
+    global image_url
     user = request.user  # get user instance
     user_id = request.user.id  # get logged in user id
     userForm = UserEditForm(instance=user)
@@ -147,7 +169,7 @@ def edit_user(request):
             print(editForm.errors)
         
 
-    context = {'user_form': userForm, 'profile_form': profileForm}
+    context = {'user_form': userForm, 'profile_form': profileForm, 'image_url': image_url}
     return render(request, 'todo/user_edit.html', context)  # user profile update successful
 
 
@@ -229,4 +251,5 @@ def change_password(request):
     return render(request, 'todo/change_password.html', {
         'password_change_form': form
     })
+
 

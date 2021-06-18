@@ -27,22 +27,14 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
-
-# set current time zone
-
-# freegeoip_response = requests.get('http://freegeoip.net/json')
-# freegeoip_response_json = freegeoip_response.json()
-# user_time_zone = freegeoip_response_json['time_zone']
-
-# timezone.activate(pytz.timezone(user_time_zone))
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'todo',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -51,13 +43,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_filters',  # <-- For filter items with form and model
+    # local
+    'todo',
+
+    #  For filter items with form and model
+    'django_filters',
+
     # apps for django allauth for social media login 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+
+    #  providers
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
+
+    # ssl server
+    'sslserver',
 
 ]
 
@@ -147,30 +149,67 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = 'todo_home'
 LOGOUT_REDIRECT_URL= 'login'
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+GOOGLE_RECAPTCHA_SECRET_KEY = '6Lf52CMbAAAAAARkvOVwFVpOLFkCEQ06A-T22vd2'
+
+# SESSION_COOKIE_AGE = 86400      #24 hours.
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 86400     # set 24 hours/ one day 
+SESSION_SAVE_EVERY_REQUEST = True
+
 
 STATIC_URL = 'todo/static/'
-MEDIA_URL = '/images/'
+# MEDIA_URL = '/images/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'todo/static'),
 )
 
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#         ],
+#         'AUTH_PARAMS': {
+#             'access_type': 'online',
+#         }
+#     },
+#     'facebook': {
+#         'SCOPE': ['email', 'publish_stream', 'profile'],
+#         'METHOD': 'js_sdk'  # instead of 'oauth2'
+#     }
+# }
+
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'name',
+            'name_format',
+            'picture',
+            'short_name'
         ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v7.0',
     }
 }
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'todo/static/todo/images/')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -180,11 +219,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_PASS')
 
-SITE_ID = 3
 SITE_ID = 1
-
-
-# SOCIAL_AUTH_FACEBOOK_KEY = '206764147945841'
-# SOCIAL_AUTH_FACEBOOK_SECRET = 'eeb74d0482a8c224153d30a785168954'
-# SOCIAL_AUTH_FACEBOOK_KEY = config('APP_ID_FACEBOOK')  # App ID
-# SOCIAL_AUTH_FACEBOOK_SECRET = config('SECRET_KEY_FACEBOOK')  # App Secret

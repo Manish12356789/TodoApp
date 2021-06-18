@@ -44,10 +44,10 @@ class UserSelectForm(forms.Form):
 class UserForm(UserCreationForm):
     password1 = forms.CharField(label='', error_messages={'required': 'Enter the strong password.'},
                                 widget=forms.PasswordInput(
-                                    attrs={'class': 'input--style-3', 'placeholder': 'Enter Your Password...'}))
+                                    attrs={'class': 'input--style-3', 'placeholder': 'Enter Your Password...', 'data-toggle': 'password'}))
     password2 = forms.CharField(label='', error_messages={'required': 'Password not matched.'},
                                 widget=forms.PasswordInput(
-                                    attrs={'class': 'input--style-3', 'placeholder': 'Confirm Your Password...'}))
+                                    attrs={'class': 'input--style-3', 'placeholder': 'Confirm Your Password...', 'data-toggle': 'password'}))
 
     class Meta:
         model = User
@@ -84,9 +84,9 @@ class UserProfileForm(forms.ModelForm):
 
 
 class PasswordForm(PasswordChangeForm):
-    old_password = forms.CharField(label='', widget=forms.PasswordInput(attrs={'class': 'input--style-3', 'placeholder': 'Your Old Password...'}))
-    new_password1 = forms.CharField(label='', widget=forms.PasswordInput(attrs={'class': 'input--style-3', 'placeholder': 'Enter Your New Password...'}))
-    new_password2 = forms.CharField(label='', widget=forms.PasswordInput(attrs={'class': 'input--style-3', 'placeholder': 'Confirm Your New Password...'}))
+    old_password = forms.CharField(label='', widget=forms.PasswordInput(attrs={'class': 'input--style-3', 'placeholder': 'Your Old Password...', 'data-toggle': 'password'}))
+    new_password1 = forms.CharField(label='', widget=forms.PasswordInput(attrs={'class': 'input--style-3', 'placeholder': 'Enter Your New Password...', 'data-toggle': 'password'}))
+    new_password2 = forms.CharField(label='', widget=forms.PasswordInput(attrs={'class': 'input--style-3', 'placeholder': 'Confirm Your New Password...', 'data-toggle': 'password'}))
 
     class Meta:
         model = User

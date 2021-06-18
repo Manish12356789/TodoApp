@@ -5,8 +5,40 @@
 
 {% block title %} Sign Up {% endblock title %}
 
+{% block style %}
+<style>
+    .g-recaptcha {
+    position: relative;
+    width: 100%;
+    /* min-height: 100px; */
+    background:  #929497;
+    overflow: hidden;
+    margin-bottom:20px;
+    border-radius: 10px;
+}
+
+ .g-recaptcha > * {
+    right: 0;
+    margin: -2px -2px -6px;/*remove borders*/ 
+
+}
+
+/*.g-recaptcha::after{
+    display: block;
+    content: "I'm not robot";
+    position: absolute;
+    left:0;
+    /*right:150px;*/
+    /*top: 0;
+    bottom:0;
+    background-color: #f9f9f9;
+    clear: both;
+} */
+</style>
+{% endblock style %}
+
 {% block content %}
-<div class="page-wrapper bg-gra-01 p-t-180 p-b-100 font-poppins">
+<div class="page-wrapper bg-gra-01 font-poppins">
     <div class="wrapper wrapper--w780">
 
         {% if form.errors %}
@@ -16,11 +48,10 @@
         {% endif %}
 
         <div class="text-white card card-3">
-            <div class="card-heading"></div>
+            <!-- <div class="card-heading"></div> -->
             <div class="card-body">
-                <h2 class="title text-center">Registration Info</h2>
-                <a href="{% provider_login_url 'facebook' %}" class="mb-5 btn btn-primary btn-block">Login With Facebook</a>
-                <a href="{% provider_login_url 'google' %}" class="mb-5 btn btn-secondary btn-block">Login With Google</a>
+                <h2 class="title text-center font-weight-bold">Registration Info</h2>
+                
                 <form method="POST" novalidate action="{% url 'register' %}"> {% csrf_token %}
                     {% for field in form %}
                     <div class="input-group">
@@ -33,12 +64,20 @@
                         {{ field }}
                     </div>
                     {% endfor %}
-                    <div class="p-t-10">
-                        <button class="btn btn--pill btn--green" type="submit">Sign In</button>
+                    <div class="g-recaptcha" data-sitekey="6Lf52CMbAAAAANlbXA-dmbMA3slDcDf_YotU43e4"></div>
+
+                    <div class="p-t-5">
+                        <button class="btn btn-block btn--pill btn--green" type="submit">Sign Up</button>
                     </div>
 
                 </form>
-                <div class="w-100 text-center mt-4 text">
+
+                <h2 class="mt-5 mb-5 text-center text-secondary">--- OR ---</h2>
+                <div class="text-center">
+                    <a href="{% provider_login_url 'facebook' %}"  class="loginBtn loginBtn--facebook">Sign Up With Facebook</a>
+                    <a href="{% provider_login_url 'google' %}" class="loginBtn loginBtn--google">Sign Up With Google</a>
+                </div>
+                <div class="w-100 text-center text">
                     <p class="mb-0">Already have an account?</p>
                     <a href="{% url 'login' %}">Login</a>
                 </div>
@@ -48,3 +87,8 @@
 </div>
 
 {% endblock content %}
+
+{% block javascript %}
+<!-- <script src='https://www.google.com/recaptcha/api.js?hl=fa'></script> -->
+<script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock javascript %}

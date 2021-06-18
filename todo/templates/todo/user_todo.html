@@ -3,116 +3,155 @@
 
 {% block title %} User | {{request.user}} {% endblock title %}
 
+{% block style %}
+<style>
+    .bg_img{
+        background-image: url( "{% static 'todo/images/background/bg_1.jpg' %}");
+    }
+</style>
+{% endblock style %}
+  
 {% block content %}
 
-<div class="row">
-<div class="col-lg-2">
-    {% include "sidebar.html" %}
-</div>
-<div class="col-lg-10">
-
-<div id="content" class="p-5">
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <form class="form-inline" style="margin-left: 20px;" method="POST" action="{% url 'todo_home'%}" novalidate>
-            {% csrf_token %}
-           <div class="input-group">
-              <div class="input-group-prepend text-dark ">
-                  {{dateFilterForm.form}}
-              <button type="submit" id="filter" class="btn btn-primary rounded">Filter</button>
-              <a href="{% url 'todo_home' %}" class="ml-3 btn btn-secondary rounded" name="reset_form">clear</a>
-              </div>  
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar-->
+    <div class="border-end" id="sidebar-wrapper">
+        <div class="sidebar-heading border-bottom">TODO APP</div>
+        <div class="img bg_img bg-wrap text-center py-4" >
+            <div class="user-logo">
+                <div class="img" name="cp" style="background-image: url( '{{image_url}}' );"></div>
+                <h3>{{ my_user.username }}</h3>
             </div>
-        </form>
-    </nav>
-
-    <!-- Task input form -->
-    {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-danger" role="alert">
-            {{ message }}
         </div>
-    {% endfor %}
-    {% endif %}
-
-    <div class="main-todo-input fl-wrap"> 
-        <form action="{% url 'add'%}" novalidate method="post">{% csrf_token %}
-            <div class="main-todo-input-item">
-                {{ form.field }}
-            </div>
-            <button class="add-items main-search-button">ADD</button>
-        </form>
+        <ul class="list-unstyled components mb-5">
+            <li class="list-group-item list-group-item-actio p-3 ">
+                <a href="{% url 'todo_home' %}"><span class="fa fa-home mr-3"></span> Home</a>
+            </li>
+            <li class="list-group-item list-group-item-action p-3">
+                <a href="{% url 'edit_user' %}"><span class="fa fa-cog mr-3"></span> Update Profile</a>
+            </li>
+            <li class="list-group-item list-group-item-action p-3">
+                <a href="{% url 'change_password' %}"><span class="fa fa-support mr-3"></span> Change Password</a>
+            </li>
+            <li class="list-group-item list-group-item-action p-3">
+                <a href="{% url 'logout' %}"><span class="fa fa-sign-out mr-3"></span> Sign Out</a>
+            </li>
+        </ul>
     </div>
+    <!-- Page content wrapper-->
+    <div id="page-content-wrapper">
+        <!-- Top navigation-->
+        <nav class="p-4 navbar navbar-expand-lg bg-light navbar-light border-bottom">
+            <div class="container-fluid">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                    <form class="form-inline" method="POST" action="{% url 'todo_home'%}" novalidate>
+                        <li class="nav-item">
+                            {{dateFilterForm.form.fromDate.label}}
+                            {{dateFilterForm.form.fromDate}}
+                        </li>
+                        <li class="nav-item">
+                            <button type="submit" id="filter" class="btn btn-primary ml-5 rounded">Filter</button>
+                            <a href="{% url 'todo_home' %}" class=" btn btn-danger ml-2 rounded" name="reset_form">clear</a>
+                        </li>
+                    </form> 
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Page content-->
+        <div class="container-fluid">
+            <!-- shown messges -->
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
 
-<!-- Task shown field -->
-<div class="main-todo-input fl-wrap todo-listing"> 
-    <ul id="list-items">
-        <!-- only Filter tasks shown  -->
-        {% if filter_items %}
-        {% for item in filter_items %}
-        <li class="mb-1"><span class="font-weight-bold">Task{{forloop.counter}}: </span><h4> {{item.field}}</h4><span id="status"></span>
-            <p>
-            <a href="{% url 'delete' item.id %}" class="btn btn-danger ml-3 float-right">Delete</a>
-            <a href="{% url 'edit' item.id %}" class="btn btn-secondary float-right">Edit</a></p>
-            <!-- <p class="text-danger h6"><span class="font-weight-bold"> Task Created:</span> <span id="cd">{{item.created_date}}</span></p>
-            <p class="text-danger h6"><span class="font-weight-bold"> Last Updated:</span> <span id="ud">{{item.updated_date}}</span></p> -->
-            <p class="text-danger h6 text-capitalize"><span class="font-weight-bold"> Status: </span>
-                {{ item.status }}
-            </p>
-            <br>
-        </li>
-        {% endfor %}
+            <!-- Task input form -->
+            <div class="main-todo-input fl-wrap" style="margin-top: 50px !important;"> 
+                <form action="{% url 'add'%}" novalidate method="post">{% csrf_token %}
+                    <div class="main-todo-input-item">
+                        {{ form.field }}
+                    </div>
+                    <button class="add-items main-search-button">ADD</button>
+                </form>
+            </div>
 
-        {% elif items %}
+            <!-- Task shown field -->
+            <div class="main-todo-input fl-wrap todo-listing"> 
+                <ul id="list-items">
+                    <!-- only Filter tasks shown  -->
+                    {% if filter_items %}
+                    {% for item in filter_items %}
+                    <li class="mb-1"><span class="font-weight-bold">Task{{forloop.counter}}: </span><h4> {{item.field}}</h4><span id="status"></span>
+                        <p>
+                        <a href="{% url 'delete' item.id %}" class="btn btn-danger ml-3 float-right">Delete</a>
+                        <a href="{% url 'edit' item.id %}" class="btn btn-secondary float-right">Edit</a></p>
+                        <!-- <p class="text-danger h6"><span class="font-weight-bold"> Task Created:</span> <span id="cd">{{item.created_date}}</span></p>
+                        <p class="text-danger h6"><span class="font-weight-bold"> Last Updated:</span> <span id="ud">{{item.updated_date}}</span></p> -->
+                        <p class="text-danger h6 text-capitalize"><span class="font-weight-bold"> Status: </span>
+                            {{ item.status }}
+                        </p>
+                        <br>
+                    </li>
+                    {% endfor %}
 
-        <!-- show all tasks as pagination -->
-        {% for item in items %}
-        <li class="mb-1"><h4> {{item.field}}</h4>
-            <p>
-                
-            <a href="{% url 'delete' item.id %}" class="btn btn-danger ml-3 float-right">Delete</a>
-            <a href="{% url 'edit' item.id %}" class="btn btn-secondary float-right">Edit</a></p>
-            <!-- <p class="text-danger h6"><span class="font-weight-bold"> Task Created:</span> <span id="cd">{{item.created_date}}</span></p>
-            <p class="text-danger h6"><span class="font-weight-bold"> Last Updated:</span> <span id="ud">{{item.updated_date}}</span></p> -->
-            <p class="text-danger h6 text-capitalize"><span class="font-weight-bold"> Status: </span>
-                {{ item.status }}
-            </p>
-            <br>
-        </li>
-        {% endfor %}
+                    {% elif items %}
 
-        {% else %}
-        <h4 class="text-center mb-3">Add your first task...</h4>
+                    <!-- show all tasks as pagination -->
+                    {% for item in items %}
+                    <li class="mb-1"><h4> {{item.field}}</h4>
+                        <p>
+                            
+                        <a href="{% url 'delete' item.id %}" class="btn btn-danger ml-3 float-right">Delete</a>
+                        <a href="{% url 'edit' item.id %}" class="btn btn-secondary float-right">Edit</a></p>
+                        <!-- <p class="text-danger h6"><span class="font-weight-bold"> Task Created:</span> <span id="cd">{{item.created_date}}</span></p>
+                        <p class="text-danger h6"><span class="font-weight-bold"> Last Updated:</span> <span id="ud">{{item.updated_date}}</span></p> -->
+                        <p class="text-danger h6 text-capitalize"><span class="font-weight-bold"> Status: </span>
+                            {{ item.status }}
+                        </p>
+                        <br>
+                    </li>
+                    {% endfor %}
 
-        {% endif %}
-    </ul>
- </div>
+                    {% else %}
+                    <h4 class="text-center mb-3">Add your first task...</h4>
 
- <!-- pagination shown -->
- <div class="main-todo-input-wrap text-center">
-    {% if items.has_other_pages %}
-    <ul class="pagination">
-        {% if items.has_previous %}
-        <li><a href="?page={{ items.previous_page_number }}">&laquo;</a></li>
-        {% else %}
-        <li class="disabled"><span>&laquo;</span></li>
-        {% endif %}
-        {% for i in items.paginator.page_range %}
-        {% if items.number == i %}
-            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-        {% else %}
-            <li><a href="?page={{ i }}">{{ i }}</a></li>
-        {% endif %}
-        {% endfor %}
-        {% if items.has_next %}
-        <li><a href="?page={{ items.next_page_number }}">&raquo;</a></li>
-        {% else %}
-        <li class="disabled"><span>&raquo;</span></li>
-        {% endif %}
-    </ul>
-    {% endif %}
-</div>
-</div>
-</div>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- pagination shown -->
+            <div class="main-todo-input-wrap text-center">
+                {% if items.has_other_pages %}
+                <ul class="pagination">
+                    {% if items.has_previous %}
+                    <li><a href="?page={{ items.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in items.paginator.page_range %}
+                    {% if items.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if items.has_next %}
+                    <li><a href="?page={{ items.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
 </div>
 
 {% endblock content %}
+        

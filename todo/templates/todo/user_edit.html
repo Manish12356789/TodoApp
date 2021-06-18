@@ -26,19 +26,8 @@
 
                     <div class="img bg_img bg-wrap text-center py-4" >
                         <div class="user-logo">
-                          {% if user.userprofile.profile_pic %}
-                          <div class="img" style="background-image: url( '{{request.user.userprofile.profile_pic.url}}');"></div>
-                                <h3>{{ request.user.username }}</h3>
-                                <h6 class="text-white">{{ request.user.email }}</h6>
-                                <h3></h3>
-                                <h3></h3>
-                                <h3></h3>
-                         {% else %}
-                         <div class="img profile_image_default "></div>
-                                <h3>{{ request.user.username }}</h3>
-                                <h6 class="text-white">{{ request.user.email }}</h6>
-                          {% endif %}
-          
+                            <div class="img" name="cp" style="background-image: url( '{{image_url}}' );"></div>
+                            <h3>{{ my_user.username }}</h3>
                       </div>
                     </div>
                     <div> <h5 class="">{{ request.user.username }}</h5>

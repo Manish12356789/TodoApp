@@ -7,11 +7,11 @@
 
     <title>TODO | {% block title %} {% endblock title %}</title>
 
-    {# Links for index page. #}
-    <link href="{% static 'todo/css/sidebar.css' %}" rel='stylesheet'>
-    <link href="{% static 'todo/css/all.css' %}" rel='stylesheet'>
-    <link href="{% static 'todo/css/style.css' %}" rel='stylesheet'>
-    <link href="{% static 'todo/css/user_profile.css' %}">
+    <!-- Links for index page. -->
+    <link rel="stylesheet" type="text/css" href="{% static 'todo/css/sidebar.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'todo/css/all.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'todo/css/user_profile.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'todo/css/style.css' %}"/>
     <!-- <link href="{% static 'todo/css/modal.css' %}"> -->
 
     {# Links for login page. #}
@@ -24,6 +24,11 @@
     <link href="{% static 'todo/vendor/datepicker/daterangepicker.css' %}" rel="stylesheet" media="all">
 
     <link href="{% static 'todo/css/user_edit.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
 
     {% block style %}
     
@@ -37,6 +42,17 @@
 
 <script src="{% static 'todo/jquery.min.js' %}"></script>
 <script src="{% static 'js/jquery.bootstrap.modal.forms.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/scripts.js"></script>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="/__/firebase/8.6.5/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<!-- Initialize Firebase -->
+<script src="/__/firebase/init.js"></script>
 
 
     {% block javascript %}

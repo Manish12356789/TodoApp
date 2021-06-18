@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User, BaseUserManager
 from django.db.models.signals import post_save
+
 from django.dispatch import receiver
+from allauth.account.signals import user_signed_up
+from allauth.socialaccount.models import SocialAccount
+# import hashlib
 
 
 class Item(models.Model):
@@ -20,19 +24,13 @@ class Item(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(null=True, blank=True, default="default.jpg")
+    profile_pic = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.user.username
 
+    
 
-# class UserInstanceProfile(User):
-#     class Meta:
-#         proxy = True
-#         user_name = ('username',)
-#
-#         def __str__(self):
-#             return self.username
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

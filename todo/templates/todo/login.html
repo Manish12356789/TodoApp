@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% load static  %}
+{% load socialaccount %}
+{% providers_media_js %}
 
 {% block title %} Login {% endblock title %}
 
 {% block content %}
-	<div class="page-wrapper bg-gra-01 p-t-180 p-b-100 font-poppins">
+	<div class="page-wrapper bg-gra-01 p-t-30 font-poppins">
         <div class="wrapper wrapper--w780">
             {% for message in messages %}
             <div class="alert alert-warning" role="alert">
@@ -15,7 +17,7 @@
             <div class="card card-3">
                 <div class="card-heading"></div>
                 <div class="card-body">
-                    <h2 class="title">Login</h2>
+                    <h1 class="title text-center font-weight-bold">LogIn</h1>
                     <form method="POST">{% csrf_token %}                    
                         <div class="input-group">
                             <input class="input--style-3" type="text" placeholder="Username" name="username">
@@ -29,9 +31,14 @@
                           </div>
                         </div>
                         <div class="p-t-10">
-                            <button class="btn btn--pill btn--green" type="submit">Login</button>
+                            <button class="btn btn-block btn--pill btn--green" type="submit">Login</button>
                         </div>
                     </form>
+
+                    <h2 class="mt-5 mb-5 text-center text-secondary">--- OR ---</h2>
+
+                    <a href="{% provider_login_url "facebook" method="oauth2" %}" name="auth"  class="loginBtn loginBtn--facebook">Login With Facebook</a>
+                    <a href="{% provider_login_url 'google' %}" name="auth" class="loginBtn loginBtn--google">Login With Google</a>
                         <div class="w-100 text-center mt-4 text-secondary">
                           <p class="mb-0">Don't have an account?</p>
                           <a href="{% url 'register' %}">Sign Up</a>
@@ -44,7 +51,5 @@
 {% endblock content %}
 
 {% block javascript %}
-    <script>
-        document.querySelectorAll( ":invalid" )[1].focus();
-    </script>-->
+
 {% endblock javascript %}

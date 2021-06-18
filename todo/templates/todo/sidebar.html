@@ -1,34 +1,33 @@
 {% load static  %}
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
-		
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-        <style>
-            .bg_img{
-                background-image: url( "{% static 'todo/images/background/bg_1.jpg' %}");
-            }
-            .profile_image_default{
-                background-image: url( "{% static 'todo/images/default.jpg' %}");
-            }
-        </style>
-  </head>
+
+{% block style %}
+<style>
+  .bg_img{
+      background-image: url( "{% static 'todo/images/background/bg_1.jpg' %}");
+  }
+  .profile_image_default{
+      background-image: url( "{% static 'todo/images/default.jpg' %}");
+  }
+</style>
+{% endblock style %}
 	
-		<div class="wrapper d-flex align-items-stretch">
+		<!-- <div class="wrapper d-flex align-items-stretch">
 			<nav id="sidebar">
 	  		<div class="img bg_img bg-wrap text-center py-4" >
 	  	    <div class="user-logo">
-                {% if user.userprofile.profile_pic %}
-                <div class="img" style="background-image: url( '{{request.user.userprofile.profile_pic.url}}');"></div>
-	  				<h3>{{ my_user.username }}</h3>
-               {% else %}
-               <div class="img profile_image_default "></div>
-	  				<h3>{{ my_user.username }}</h3>
-                {% endif %}
-
-            </div>
+            {% if user.socialaccount_set.all.0.get_avatar_url %}
+            <div class="img" style="background-image: url( '{{ user.socialaccount_set.all.0.get_avatar_url }}');"></div>
+            {% elif user.userprofile.profile_image_url %}
+              <div class="img" style="background-image: url( '{{ user.userprofile.profile_image_url.fb_uid }}');"></div>
+            {% elif user.userprofile.profile_pic %}
+              <div class="img" style="background-image: url( '{{request.user.userprofile.profile_pic.url}}');"></div>
+            {% else %}
+              <div class="img profile_image_default "></div>
+            {% endif %}
+              <h3>{{ my_user.username }}</h3>
+          </div>
 	  		</div>
         <ul class="list-unstyled components mb-5">
           <li class="active">
@@ -45,4 +44,98 @@
           </li>
         </ul>
     </nav>
-</div>
+</div> -->
+
+
+
+  <div class="d-flex" id="wrapper">
+      <!-- Sidebar-->
+      <div class="border-end bg-white" id="sidebar-wrapper">
+          <div class="sidebar-heading border-bottom bg-light">Start Bootstrap</div>
+
+
+          <nav id="sidebar">
+            <div class="img bg_img bg-wrap text-center py-4" >
+              <div class="user-logo">
+                {% if user.socialaccount_set.all.0.get_avatar_url %}
+                <div class="img" style="background-image: url( '{{ user.socialaccount_set.all.0.get_avatar_url }}');"></div>
+                {% elif user.userprofile.profile_image_url %}
+                  <div class="img" style="background-image: url( '{{ user.userprofile.profile_image_url.fb_uid }}');"></div>
+                {% elif user.userprofile.profile_pic %}
+                  <div class="img" style="background-image: url( '{{request.user.userprofile.profile_pic.url}}');"></div>
+                {% else %}
+                  <div class="img profile_image_default "></div>
+                {% endif %}
+                  <h3>{{ my_user.username }}</h3>
+              </div>
+            </div>
+            <ul class="list-unstyled components mb-5">
+              <li class="active">
+                <a href="{% url 'todo_home' %}"><span class="fa fa-home mr-3"></span> Home</a>
+              </li>
+              <li>
+                <a href="{% url 'edit_user' %}"><span class="fa fa-cog mr-3"></span> Update Profile</a>
+              </li>
+              <li>
+                <a href="{% url 'change_password' %}"><span class="fa fa-support mr-3"></span> Change Password</a>
+              </li>
+              <li>
+                <a href="{% url 'logout' %}"><span class="fa fa-sign-out mr-3"></span> Sign Out</a>
+              </li>
+            </ul>
+        </nav>
+
+
+      </div>
+      <!-- Page content wrapper-->
+      <div id="page-content-wrapper">
+
+
+          <!-- Top navigation-->
+          <nav class="p-4 fixed-top navbar navbar-expand-lg navbar-light bg-secondary">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="form-inline" style="float: left;" method="POST" action="{% url 'todo_home'%}" novalidate>
+                {% csrf_token %}
+            <ul class="navbar-nav ml-auto topnav">
+                <li class="nav-item">
+                    {{dateFilterForm.form.fromDate.label}}
+                    {{dateFilterForm.form.fromDate}}            
+                </li>
+                <li class="nav-item">
+                    <button type="submit" id="filter" class="btn btn-primary ml-5 rounded">Filter</button>
+                    <a href="{% url 'todo_home' %}" class="p-3 btn btn-danger ml-2 rounded" name="reset_form">clear</a>
+                </li>  
+            </ul>  
+        </form>
+        </div>
+    </nav>
+
+          <!-- Page content-->
+          <div class="container-fluid">
+              
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Core theme JS-->
+  <script src="js/scripts.js"></script>
+</body>
+
+
+
+
+
+{% if user.userprofile.google_pic_fun %}
+<div class="img" name="google" style="background-image: url( '{{request.user.socialaccount_set.all.0.get_avatar_url }}');"></div>
+
+
+
+{% if my_user.userprofile.google_pic_fun %}
+                    <div class="img" name="google" style="background-image: url( '{{request.user.socialaccount_set.all.0.get_avatar_url }}');"></div>
+                {% else %}
+                    <div name="default" class="img profile_image_default "></div>
+                {% endif %}
+                
+                {% if my_user.userprofile.profile_pic.url %}
+                <div class="img" name="cp" style="background-image: url( '{{my_user.userprofile.profile_pic.url}}');"></div>  
+                {% else %}
+                    <div name="default" class="img profile_image_default "></div>
+                {% endif %}
